@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ludo.app.calendarview.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ludo.app.calendarview.RectangleLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="@dimen/dp8"
+    android:paddingBottom="@dimen/dp8"
     android:background="@android:color/white"
-    android:gravity="center"
-    android:padding="5dp">
+    android:gravity="center">
 
     <TextView
         android:id="@+id/date"
@@ -14,4 +15,4 @@
         android:textSize="@dimen/sp12"
         android:textStyle="bold" />
 
-</ludo.app.calendarview.SquareLayout>
+</ludo.app.calendarview.RectangleLayout>

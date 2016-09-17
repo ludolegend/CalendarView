@@ -2,12 +2,12 @@
     <string name="app_name">CalendarView</string>
 
     <string-array name="day_of_week">
-        <item>S</item>
         <item>M</item>
         <item>T</item>
         <item>W</item>
         <item>T</item>
         <item>F</item>
+        <item>S</item>
         <item>S</item>
     </string-array>
 </resources>

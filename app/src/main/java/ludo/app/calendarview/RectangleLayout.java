@@ -8,21 +8,21 @@ import android.widget.LinearLayout;
 /**
  * Created by Ludo on 9/12/16.
  */
-public class SquareLayout extends LinearLayout {
-    public SquareLayout(Context context) {
+public class RectangleLayout extends LinearLayout {
+    public RectangleLayout(Context context) {
         super(context);
     }
 
-    public SquareLayout(Context context, AttributeSet attrs) {
+    public RectangleLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SquareLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RectangleLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
+        super.onMeasure(widthMeasureSpec, (int) (widthMeasureSpec*0.5));
     }
 }
