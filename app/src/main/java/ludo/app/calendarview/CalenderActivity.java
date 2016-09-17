@@ -29,7 +29,7 @@ public class CalenderActivity extends Activity {
     private GridView mGridView;
 
     private List<String> mDayList;
-    private CalendarAdapter2 mCalendarAdapter2;
+    private CalendarAdapter mCalendarAdapter;
 
     private Calendar mGregorianCalendar;
     private GregorianCalendar mPreviousMonth;
@@ -41,6 +41,10 @@ public class CalenderActivity extends Activity {
     private int mLastSelectedPosition = -1;
     private String mSelectedDate;
 
+    /**
+     * get maximum of day of month from previous month
+     * @return int
+     */
     private int getMaxP() {
         int maxP;
         if (mGregorianCalendar.get(GregorianCalendar.MONTH) == mGregorianCalendar
@@ -55,6 +59,9 @@ public class CalenderActivity extends Activity {
         return maxP;
     }
 
+    /**
+     * set next month for current gregorian calendar
+     */
     private void setNextMonth() {
         if (mGregorianCalendar.get(GregorianCalendar.MONTH) == mGregorianCalendar
                 .getActualMaximum(GregorianCalendar.MONTH)) {
@@ -66,6 +73,9 @@ public class CalenderActivity extends Activity {
         }
     }
 
+    /**
+     * set previous month for current gregorian calendar
+     */
     private void setPreviousMonth() {
         if (mGregorianCalendar.get(GregorianCalendar.MONTH) == mGregorianCalendar
                 .getActualMinimum(GregorianCalendar.MONTH)) {
@@ -77,13 +87,19 @@ public class CalenderActivity extends Activity {
         }
     }
 
+    /**
+     * refresh calendar
+     */
     private void refreshCalendar() {
         mDayList.clear();
+        // add first 7 items for title displaying
         for (String s : getResources().getStringArray(R.array.day_of_week)) {
             mDayList.add(s);
         }
         mPreviousMonth = (GregorianCalendar) mGregorianCalendar.clone();
+        // start by monday
         mFirstDay = mGregorianCalendar.get(GregorianCalendar.DAY_OF_WEEK) - 1;
+        // guarantee the next month won't be lost the first day
         if (mFirstDay == 0) {
             mFirstDay = 7;
         }
@@ -101,23 +117,26 @@ public class CalenderActivity extends Activity {
             mPreviousMonthMaxSet.add(GregorianCalendar.DATE, 1);
             mDayList.add(value);
         }
+        // add 1 more rows in gridview
         if (mDayList.size() <= 42) {
             for (int i = 0; i <= 6; i++) {
-                mDayList.add(CalendarAdapter2.DEFAULT_VALUE);
+                mDayList.add(CalendarAdapter.DEFAULT_VALUE);
             }
         }
-        mCalendarAdapter2.setFirstDay(mFirstDay);
+        // set first day in adapter
+        mCalendarAdapter.setFirstDay(mFirstDay);
         mDateTextView
                 .setText(android.text.format.DateFormat.format("yyyy MMMM", mGregorianCalendar));
+        // check and set last selected day for keep selected day when change calendar
         if (!TextUtils.isEmpty(mSelectedDate)) {
             for (int i = 0; i < mDayList.size(); i++) {
                 if (mDayList.get(i).equals(mSelectedDate)) {
-                    mCalendarAdapter2.setLastSelecteDay(mDayList.get(i));
+                    mCalendarAdapter.setLastSelecteDay(mDayList.get(i));
                     break;
                 }
             }
         }
-        mCalendarAdapter2.notifyDataSetChanged();
+        mCalendarAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -136,12 +155,12 @@ public class CalenderActivity extends Activity {
         mGridView = (GridView) findViewById(R.id.gv_calendar);
 
         mDayList = new ArrayList<String>();
-        mCalendarAdapter2 = new CalendarAdapter2(getApplicationContext(), mDayList);
-        mGridView.setAdapter(mCalendarAdapter2);
+        mCalendarAdapter = new CalendarAdapter(getApplicationContext(), mDayList);
+        mGridView.setAdapter(mCalendarAdapter);
 
         mGregorianCalendar = (GregorianCalendar) GregorianCalendar.getInstance();
         mCurrentDate = mDateFormat.format(mGregorianCalendar.getTime());
-        mCalendarAdapter2.setCurrentDay(mCurrentDate);
+        mCalendarAdapter.setCurrentDay(mCurrentDate);
         mGregorianCalendar.set(GregorianCalendar.DAY_OF_MONTH, 1);
         refreshCalendar();
 
@@ -167,18 +186,20 @@ public class CalenderActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 6) {
                     String selectedGridDate = mDayList.get(position);
-                    if (!selectedGridDate.equalsIgnoreCase(CalendarAdapter2.DEFAULT_VALUE)) {
+                    if (!selectedGridDate.equalsIgnoreCase(CalendarAdapter.DEFAULT_VALUE)) {
                         String[] separatedTime = selectedGridDate.split("-");
                         String day = separatedTime[2].replaceFirst("^0*", "");
                         if ((Integer.parseInt(day) > 1) && (position < mFirstDay + 7)) {
                         } else if ((Integer.parseInt(day) <= 7) && (position > 28)) {
                         } else {
+                            // keep only one item selected at one time
                             if (mLastSelectedPosition != -1) {
                                 parent.getChildAt(mLastSelectedPosition)
                                         .setBackgroundColor(ContextCompat
                                                 .getColor(getApplicationContext(),
                                                         android.R.color.white));
                             }
+                            // alway set blue color for the current day
                             for (int i = 0; i < mDayList.size(); i++) {
                                 if (mDayList.get(i).equals(mCurrentDate)) {
                                     parent.getChildAt(i).setBackgroundColor(Color.BLUE);
@@ -203,6 +224,11 @@ public class CalenderActivity extends Activity {
         });
     }
 
+    /**
+     * get day of week from a date
+     * @param date
+     * @return day of week
+     */
     private int getWeekDay(String date) {
         String[] part = date.split("-");
         Calendar c = Calendar.getInstance();

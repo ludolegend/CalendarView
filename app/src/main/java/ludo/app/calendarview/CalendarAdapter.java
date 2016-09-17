@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Ludo on 9/16/16.
  */
-public class CalendarAdapter2 extends BaseAdapter {
+public class CalendarAdapter extends BaseAdapter {
 
     public static String DEFAULT_VALUE = "default";
 
@@ -42,7 +42,7 @@ public class CalendarAdapter2 extends BaseAdapter {
         this.mCurrentDay = mCurrentDay;
     }
 
-    public CalendarAdapter2(Context mContext, List<String> mDayList) {
+    public CalendarAdapter(Context mContext, List<String> mDayList) {
         this.mContext = mContext;
         this.mDayList = mDayList;
     }
@@ -76,10 +76,12 @@ public class CalendarAdapter2 extends BaseAdapter {
         }
 
         String date = mDayList.get(position);
+        // ignore first 6 postion since there are day of week title
         if (position > 6) {
             if (!date.equalsIgnoreCase(DEFAULT_VALUE)) {
                 String[] separatedTime = date.split("-");
                 String day = separatedTime[2].replaceFirst("^0*", "");
+                // check days of previous month and days of next month then set them invisible
                 if ((Integer.parseInt(day) > 1) && (position < mFirstDay + 7)) {
                     viewHolder.day.setVisibility(View.INVISIBLE);
                 } else if ((Integer.parseInt(day) <= 7) && (position > 28)) {
@@ -87,6 +89,7 @@ public class CalendarAdapter2 extends BaseAdapter {
                 } else {
                     viewHolder.day.setVisibility(View.VISIBLE);
                 }
+                // check current day and set blue color for it, others will be white color
                 if (date.equals(mCurrentDay)) {
                     view.setBackgroundColor(Color.BLUE);
                 } else {
@@ -99,10 +102,13 @@ public class CalendarAdapter2 extends BaseAdapter {
         } else {
             viewHolder.day.setText(date);
         }
+        // check for last selected day
         if (!TextUtils.isEmpty(mLastSelecteDay)) {
             if (date.equals(mLastSelecteDay)) {
+                // only display for day that was displaying visible
                 if (viewHolder.day.getVisibility() == View.VISIBLE) {
                     view.setBackgroundColor(Color.RED);
+                    // clear it after found in order to ignore duplicate
                     mLastSelecteDay = "";
                 }
             }

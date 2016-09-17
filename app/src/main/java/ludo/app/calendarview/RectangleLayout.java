@@ -23,6 +23,7 @@ public class RectangleLayout extends LinearLayout {
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // divide width by 2 and set to height for creating a rectangle layout
         super.onMeasure(widthMeasureSpec, (int) (widthMeasureSpec*0.5));
     }
 }
